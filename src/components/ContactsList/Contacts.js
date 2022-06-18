@@ -7,7 +7,7 @@ import ContactItem from 'components/ContactItem';
 import { useGetContactsQuery } from 'redux/contacts/contactsRtkSlice';
 
 export default function Contacts({ item }) {
-  const { data, error, isLoading } = useGetContactsQuery();
+  const { isLoading } = useGetContactsQuery();
 
   return (
     <ul className={s.list}>
