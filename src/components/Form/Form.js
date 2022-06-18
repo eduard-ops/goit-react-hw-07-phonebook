@@ -4,9 +4,12 @@ import PropTypes from 'prop-types';
 
 import { useState } from 'react';
 
+import { useGetContactsQuery } from 'redux/contacts/contactsRtkSlice';
+
 export default function Form({ onSubmit }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const { data: contacts } = useGetContactsQuery();
 
   const resetForm = () => {
     setName('');
@@ -28,11 +31,21 @@ export default function Form({ onSubmit }) {
     }
   };
 
+  const cheakAddContact = name => {
+    const isValidate = contacts.find(item => item.name === name);
+    isValidate && alert(`${name} is already in contacts`);
+    return isValidate;
+  };
+
   const handleSubmut = e => {
     e.preventDefault();
+    const isValidate = cheakAddContact(name);
+    resetForm();
+    if (isValidate) return;
     onSubmit({ name, number });
     resetForm();
   };
+
   return (
     <form onSubmit={handleSubmut} className={s.form}>
       <label className={s.label}>
