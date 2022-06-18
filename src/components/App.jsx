@@ -6,20 +6,36 @@ import Container from './Container';
 
 import Filter from './Filter';
 
-import { useInfo } from 'redux/contacts/contactsReducer';
+import { useState, useMemo } from 'react';
+
+import { useAddContactMutation } from 'redux/contacts/contactsRtkSlice';
+
+import { useGetContactsQuery } from 'redux/contacts/contactsRtkSlice';
 
 export default function App() {
-  const { create } = useInfo();
-  const createContact = user => {
-    create(user);
+  const [addContact] = useAddContactMutation();
+  const [filter, setFilter] = useState('');
+  const { data: contacts } = useGetContactsQuery();
+
+  const createContact = async user => {
+    await addContact(user);
   };
+
+  const filterContacts = useMemo(() => {
+    return (
+      contacts?.filter(item =>
+        item.name.toLowerCase().includes(filter.toLowerCase())
+      ) ?? []
+    );
+  }, [filter, contacts]);
+
   return (
     <Container>
       <h1>Phonebook</h1>
       <Form onSubmit={createContact} />
       <h2>Contacts</h2>
-      <Filter />
-      <Contacts />
+      <Filter value={filter} onChange={setFilter} />
+      <Contacts item={filterContacts} />
     </Container>
   );
 }
