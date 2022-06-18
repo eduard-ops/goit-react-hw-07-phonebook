@@ -1,14 +1,11 @@
-import { contactsReducer } from './contacts/contactsReducer';
-
 import { configureStore } from '@reduxjs/toolkit';
+
+import { contactsSplice } from './contacts/contactsRtkSlice';
 
 export const store = configureStore({
   reducer: {
-    items: contactsReducer.reducer,
+    [contactsSplice.reducerPath]: contactsSplice.reducer,
   },
-});
-
-store.subscribe(() => {
-  const state = store.getState();
-  window.localStorage.setItem('contacts', JSON.stringify(state.items.items));
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(contactsSplice.middleware),
 });
